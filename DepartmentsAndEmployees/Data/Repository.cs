@@ -309,30 +309,59 @@ namespace DepartmentsAndEmployees.Data
         /// </summary>
         public void AddEmployee(Employee employee)
         {
-            /*
-             * TODO: Complete this method by using an INSERT statement with SQL
-             *  Remember to use SqlParameters!
-             */
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    // More string interpolation
+                    cmd.CommandText = $"INSERT INTO Employee (firstName, lastName, DepartmentId) Values ('{employee.FirstName}', '{employee.LastName}', '{employee.DepartmentId}')";
+                    cmd.Parameters.Add(new SqlParameter("@firstName", employee.FirstName));
+                    cmd.Parameters.Add(new SqlParameter("@lastName", employee.LastName));
+                    cmd.Parameters.Add(new SqlParameter("@departmentId", employee.DepartmentId));
+                    cmd.ExecuteNonQuery();
+                }
+            }
         }
         /// <summary>
         ///  Updates the employee with the given id
         /// </summary>
         public void UpdateEmployee(int id, Employee employee)
         {
-            /*
-             * TODO: Complete this method using an UPDATE statement with SQL
-             *  Remember to use SqlParameters!
-             */
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    // Here we do something a little different...
+                    //  We're using a "parameterized" query to avoid SQL injection attacks.
+                    //  First, we add variable names with @ signs in our SQL.
+                    //  Then, we add SqlParamters for each of those variables.
+                    cmd.CommandText = @"UPDATE Employee
+                                           SET DepartmentId = @departmentId
+                                         WHERE Id = @id";
+                    cmd.Parameters.Add(new SqlParameter("@departmentId", employee.DepartmentId));
+                    cmd.Parameters.Add(new SqlParameter("@id", id));
+                    // Maybe we should refactor our other SQL to use parameters
+                    cmd.ExecuteNonQuery();
+                }
+            }
         }
         /// <summary>
         ///  Delete the employee with the given id
         /// </summary>
         public void DeleteEmployee(int id)
         {
-            /*
-             * TODO: Complete this method using a DELETE statement with SQL
-             *  Remember to use SqlParameters!
-             */
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "DELETE FROM Employee WHERE Id = @id";
+                    cmd.Parameters.Add(new SqlParameter("@id", id));
+                    cmd.ExecuteNonQuery();
+                }
+            }
         }
     }
 }

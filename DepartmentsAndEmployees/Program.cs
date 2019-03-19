@@ -88,7 +88,7 @@ namespace DepartmentsAndEmployees
             Pause();
             repository.DeleteEmployee(dbJane.Id);
             employees = repository.GetAllEmployeesWithDepartment();
-            PrintEmployeeReport("All Employees after updating Jane", employees);
+            PrintEmployeeReport("All Employees after Deleting Jane", employees);
             Pause();
         }
         /// <summary>
